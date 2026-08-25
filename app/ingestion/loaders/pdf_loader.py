@@ -1,37 +1,91 @@
-from pypdf import PdfReader
+from __future__ import annotations
 
-def load_pdf(file_path):
-    try:
-        reader = PdfReader(file_path)
-    except Exception as e:
+import logging
+from pathlib import Path
+from uuid import uuid4
+
+import fitz  # PyMuPDF
+
+from app.ingestion.extractors.metadata_extractor import MetaDataExtractor
+from app.ingestion.extractors.text_extractor import TextExtractor
+from app.ingestion.interfaces.base_loader import BaseLoader
+from app.schemas.document import Document
+
+logger = logging.getLogger(__name__)
+
+
+class PDFLoader(BaseLoader):
+    """
+
+        Responsiable For:
+            - file validation
+            - Opening PDF
+            - Delegating Extraction
+            - Building Document object
+    """
+
+    @classmethod
+    def supports(cls) -> tuple[str, ...]:
+        return (".pdf",)
+
+
+    def validate(self) -> None:
+
+        if not self.file_path.exists():
+            raise FileNotFoundError(
+                f"File not found: {self.file_path} "
+            )
         
+        if not self.file_path.is_file:
+            raise ValueError(
+                f"Not a valid File: {self.file_path} "
+            )
+        
+        if self.file_path.suffix.lower() not in self.supports():
+            raise ValueError(
+                f"Unsupported file type: {self.file_path.suffix} "
+            )
+    
 
-    text = ""
+    def load(self) -> Document:
 
-    for page in reader.pages:
-        page_text = page.extract_text()
+        self.validate()
+        
+        logger.info("Loading PDF: %s", self.file_path.name)
 
-        if page_text:
-            text += page_text + "\n"
+        try:
+            with fitz.open(self.file_path) as pdf:
 
-    return text
+                text = TextExtractor.extract(pdf)
 
+                metadata = MetaDataExtractor.extract(
+                    pdf,
+                    self.file_path
+                )
 
-# for multiple pdf 
-def load_multiple_pdfs(file_paths):
-    documents = []
+                document = Document(
+                    document_id = str(uuid4),
+                    source = str(self.file_path),
+                    file_name= self.file_path.name,
+                    file_path= self.file_path, 
+                    content= text,
+                    metadata= metadata,
+                )
 
-    for file_path in file_paths:
-        reader = PdfReader(file_path)
+                logger.info(
+                    "successfully loaded '%s' (%d pages)",
+                    self.file_path.name,
+                    metadata.page_count
+                )
 
-        for i, page in enumerate(reader.pages):
-            text = page.extract_text()
-
-            if text:
-                documents.append({
-                    "text": text,
-                    "source": file_path,
-                    "page": i
-                })
-
-    return documents
+                return document
+            
+        except Exception as ex:
+            logger.exception(
+                "failed tp load PDF: %s",
+                self.file_path.name
+            )
+            raise RuntimeError(
+                f"Unable to load PDF: {self.file_path} "
+             ) from ex
+       

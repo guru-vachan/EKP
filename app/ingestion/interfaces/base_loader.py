@@ -43,13 +43,16 @@ class BaseLoader(ABC):
         raise NotImplementedError
     
 
+    @classmethod
     @abstractmethod
-    def supports(self) -> tuple[str, ...]:
+    def supports(cls) -> tuple[str, ...]:
         """
             Return support file extensions eg: pdf, etc...
 
             A small abstruction can eliminate futute conditional logic and imporve extensibility
         """
+
+        raise NotImplementedError
     
     
     def load(self) -> Document:
