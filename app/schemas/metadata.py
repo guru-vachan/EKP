@@ -1,0 +1,10 @@
+class Metadata:
+    title: str
+    author: str
+    subject: str
+    creator: str
+    producer: str
+    creation_date: str
+    modified_date: str
+    page_count: int
+    file_size: int 

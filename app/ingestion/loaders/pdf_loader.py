@@ -1,11 +1,18 @@
 from pypdf import PdfReader
 
 def load_pdf(file_path):
-    reader = PdfReader(file_path)
+    try:
+        reader = PdfReader(file_path)
+    except Exception as e:
+        
+
     text = ""
 
     for page in reader.pages:
-        text += page.extract_text()
+        page_text = page.extract_text()
+
+        if page_text:
+            text += page_text + "\n"
 
     return text
 
