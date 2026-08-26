@@ -10,10 +10,23 @@ from app.ingestion.extractors.metadata_extractor import MetaDataExtractor
 from app.ingestion.extractors.text_extractor import TextExtractor
 from app.ingestion.interfaces.base_loader import BaseLoader
 from app.schemas.document import Document
+from app.ingestion.loader_registry import LoaderRegistry
 
 logger = logging.getLogger(__name__)
 
 
+"""
+
+    decorator syntax: @LoaderRegistry.register
+    meaning at the end it add this line : 
+        PDFLoader = LoaderRegistry.register(PDFLoader)
+
+    when it call:
+        usually when the module imported eg: 
+            if any class contain import PDFLoader its mean register call otherwise not.
+         
+"""
+@LoaderRegistry.register
 class PDFLoader(BaseLoader):
     """
 

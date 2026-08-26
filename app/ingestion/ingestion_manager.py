@@ -6,6 +6,7 @@ from app.core.exceptions import UnsupportedFileTypeError
 from app.ingestion.interfaces.base_loader import BaseLoader
 from app.ingestion.loaders.pdf_loader import PDFLoader
 from app.schemas.document import Document
+from app.ingestion.loader_registry import LoaderRegistry
 
 
 class IngestionManager:
@@ -17,28 +18,22 @@ class IngestionManager:
         It only select the correct loader based on the file extension.
     """
 
-    _LOADERS: tuple[type[BaseLoader], ...] = (
-        PDFLoader,
-       # DOCXLODER, : IN FUTURE IF ADD DOCX LOADER
-    )
-
     @classmethod
     def ingest(cls, file_path: str | Path) -> Document:
         """
-        
-            Ingest a document and return Standerarized Document object
+
+            Ingest a document and return Standerarized Document object.
         """
 
         file_path = Path(file_path)
-
         extension = file_path.suffix.lower()
 
-        for loader_cls in cls._LOADERS:
-
-            if extension in loader_cls.supports():
-                loader = loader_cls(file_path)
-                return loader.load()
+        try:
+            loader_cls = LoaderRegistry.get(extension)
+            loader = loader_cls(file_path)
             
-        raise UnsupportedFileTypeError(
-            f"Unsupported file type: '{extension}'"
-        )
+            return loader.load()
+        except Exception as ex:    
+            raise UnsupportedFileTypeError(
+                f"Unsupported file type: '{extension}'"
+            )
