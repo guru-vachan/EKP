@@ -33,4 +33,4 @@ class TextExtractor:
                     )
                 )
 
-        return pages
+        return "\n".join(page.text for page in pages)
