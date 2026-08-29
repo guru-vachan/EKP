@@ -5,7 +5,7 @@ from app.ingestion.chunking.chunker_register import ChunkerRegistry
 from app.schemas.chunk import Chunk
 from app.schemas.document import Document
 
-class ChunkingMAnager:
+class ChunkingManager:
 
     def __init__(self, config: ChunkingConfig) -> None:
         self._config = config

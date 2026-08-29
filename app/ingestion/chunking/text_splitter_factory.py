@@ -33,7 +33,7 @@ class TextSplitterFactory:
         ),
     }
 
-    @staticmethod
+    @classmethod
     def create(cls, strategy: str, config: ChunkingConfig) -> TextSplitter:
         """
             create a Generic Splitter.

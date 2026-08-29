@@ -50,12 +50,8 @@ class RecursiveChunker(BaseChunker):
                     document_id=document.document_id,
                     chunk_index=index,
                     content=text,
-                    metadata=document.metadata.model_copy(
-                        update={
-                            "chunk_index": index,
-                            "character_count": len(text)
-                        }
-                    ),
+                    metadata=document.metadata,
+                    character_count=len(text),
                 )
             )
         

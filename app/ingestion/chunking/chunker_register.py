@@ -9,6 +9,7 @@ class ChunkerRegistry:
 
     _registry: dict[str, type[BaseChunker]] = {}
 
+    @classmethod
     def register(cls, chunker: type[BaseChunker]) -> type[BaseChunker]:
 
         name  = chunker.name().lower()
@@ -20,6 +21,8 @@ class ChunkerRegistry:
 
         return chunker
     
+
+    @classmethod
     def get(cls, strategy: str) -> type[BaseChunker]:
 
         chunker = cls._registry.get(strategy.lower())
@@ -31,3 +34,5 @@ class ChunkerRegistry:
                 f"Unknown chunking strategy '{strategy} ."
                 f"supported strategies: {supported}."
             )
+        
+        return chunker

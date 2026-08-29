@@ -49,7 +49,7 @@ class PDFLoader(BaseLoader):
                 f"File not found: {self.file_path} "
             )
         
-        if not self.file_path.is_file:
+        if not self.file_path.is_file():
             raise ValueError(
                 f"Not a valid File: {self.file_path} "
             )
@@ -77,7 +77,7 @@ class PDFLoader(BaseLoader):
                 )
 
                 document = Document(
-                    document_id = str(uuid4),
+                    document_id = str(uuid4()),
                     source = str(self.file_path),
                     file_name= self.file_path.name,
                     file_path= self.file_path, 
