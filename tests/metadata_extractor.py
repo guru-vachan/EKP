@@ -1,7 +1,8 @@
 import fitz
 from pathlib import Path
 
-from app.ingestion.extractors.metadata_extractor import MetaDataExtractor
+from app.ingestion.metadata.metadata_generator import MetadataGenerator
+from app.ingestion.extractors.text_extractor import TextExtractor
 
 """
 to run test cases:
@@ -21,10 +22,12 @@ def test_extract_pdf_metadata():
             "producer": "EKP Test Suite",
         })
         
+        text = TextExtractor.extract(document)
 
-        metadata = MetaDataExtractor.extract(
-            document,
-            pdf_path,
+        metadata = MetadataGenerator.generate(
+            document=document,
+            file_path=pdf_path,
+            text=text
         )
 
         print(metadata.title )
