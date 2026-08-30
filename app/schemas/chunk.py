@@ -3,9 +3,9 @@ from pydantic import BaseModel
 from app.schemas.metadata import Metadata
 
 class Chunk(BaseModel):
-    chunk_id: str | None = None
-    document_id: str | None = None
-    content: str | None = None
+    chunk_id: str 
+    document_id: str 
+    content: str 
     chunk_index: int
     metadata: Metadata
     character_count: int

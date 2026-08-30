@@ -1,14 +1,15 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 
 class Metadata(BaseModel):
-    title: str | None = None
-    author: str | None = None
-    subject: str | None = None
-    creator: str | None = None
-    producer: str | None = None
-    creation_date: datetime | None = None
-    modified_date: datetime | None = None
+    title: str 
+    author: str 
+    subject: str 
+    creator: str 
+    producer: str 
+    creation_date: Optional[datetime] = None
+    modified_date: Optional[datetime] = None
     page_count: int
     file_size: int 

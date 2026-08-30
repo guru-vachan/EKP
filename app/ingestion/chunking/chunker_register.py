@@ -14,6 +14,8 @@ class ChunkerRegistry:
 
         name  = chunker.name().lower()
 
+        print("chunker-------> ")
+
         if name in cls._registry:
             raise ValueError(f"chunker '{name}' is already registered.")
         

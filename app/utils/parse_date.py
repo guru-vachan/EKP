@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def parse_pdf_date(value: str | None) -> datetime | None:
+def parse_pdf_date(value: str) -> datetime:
     """
 
         PyMuPDF commonly returns PDF dates like:
