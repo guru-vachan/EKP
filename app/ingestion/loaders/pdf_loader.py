@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import fitz  # PyMuPDF
 
-from app.ingestion.extractors.metadata_extractor import MetaDataExtractor
+from app.ingestion.metadata.metadata_generator import MetadataGenerator
 from app.ingestion.extractors.text_extractor import TextExtractor
 from app.ingestion.interfaces.base_loader import BaseLoader
 from app.schemas.document import Document
@@ -71,9 +71,10 @@ class PDFLoader(BaseLoader):
 
                 text = TextExtractor.extract(pdf)
 
-                metadata = MetaDataExtractor.extract(
-                    pdf,
-                    self.file_path
+                metadata = MetadataGenerator.generate(
+                    document=pdf,
+                    file_path=self.file_path,
+                    text=text
                 )
 
                 document = Document(
