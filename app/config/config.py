@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.enum.index_type import IndexType
 
 class ChunkingConfig(BaseModel):
     chunk_size: int = 1000
@@ -12,3 +14,19 @@ class EmbeddingConfig(BaseModel):
     normalize_embeddings: str
     batch_size: int
     provider: str | None = "bge"
+
+
+class VectorStoreConfig(BaseModel):
+    model_config = ConfigDict(
+        frozen=True
+    )
+    provider: str
+    dimension: int = Field(
+        gt=0
+    )
+    index_type: IndexType
+    hnsw_m: int = 32
+    top_k: int = 5
+    persist_directory: str = (
+        "data/vector_store"
+    )
