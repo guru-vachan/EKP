@@ -12,7 +12,8 @@ class Embedding(BaseModel):
 
     model_config = ConfigDict(
         frozen=True,
-        extra="forbid"
+        extra="forbid",
+        arbitrary_types_allowed=True,
     )
 
     embedding_id: str = Field(

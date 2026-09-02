@@ -7,9 +7,11 @@ from app.schemas.chunk import Chunk
 from app.config.config import ChunkingConfig
 from app.ingestion.chunking.interfaces.base_chunker import BaseChunker
 from app.schemas.document import Document
+from app.ingestion.chunking.chunker_register import ChunkerRegistry
 
 logger = logging.getLogger(__name__)
 
+@ChunkerRegistry.register
 class SemanticChunker(BaseChunker):
     """
         Sementic chunking implementation.

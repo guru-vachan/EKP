@@ -21,7 +21,7 @@ class BGEEmbedding(BaseEmbedding):
         BAAI BGE embedding provider.
     """
 
-    _model = SentenceTransformer | None = None
+    _model: SentenceTransformer | None = None
 
     def __init__(self, config: EmbeddingConfig) -> None:
         """
@@ -43,7 +43,7 @@ class BGEEmbedding(BaseEmbedding):
     def name(cls) -> str:
         return "bge"
     
-    
+
     def encode(self, chunks: list[Chunk]) -> list[Embedding]:
         """
             Generate embedding for chunks.

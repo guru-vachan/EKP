@@ -21,4 +21,4 @@ class SearchResult(BaseModel):
         description="rank in the search results." 
     )
 
-    vector_store: int
+    vector_store: str
