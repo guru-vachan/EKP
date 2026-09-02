@@ -11,9 +11,9 @@ class ChunkingManager:
         self._config = config
     
 
-    def chunk(self, document: Document, strategy: str) -> list[Chunk]:
+    def chunk(self, document: Document) -> list[Chunk]:
 
-        chunker_cls = ChunkerRegistry.get(strategy)
+        chunker_cls = ChunkerRegistry.get(self._config.strategy)
 
         chunker = chunker_cls(self._config)
 

@@ -34,11 +34,17 @@ class VectorStoreManager:
     def initialize(self) -> None:
 
         index_path = (
-            Path(self._config.persist_directory)
+            Path(self._config.storage_directory)
             / "faiss.index"
         )
 
         if index_path.exists():
             self._provider.load(
-                self._config.persist_directory
+                self._config.storage_directory
             )
+    
+    def persist(self) -> None:
+
+        self._provider.persist(
+            self._config.storage_directory
+        )

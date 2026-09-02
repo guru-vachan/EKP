@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 
+from pathlib import Path
+
 from app.enum.index_type import IndexType
 
 class ChunkingConfig(BaseModel):
@@ -11,7 +13,7 @@ class ChunkingConfig(BaseModel):
 class EmbeddingConfig(BaseModel):
     device: str
     model_name: str
-    normalize_embeddings: str
+    normalize_embeddings: bool
     batch_size: int
     provider: str | None = "bge"
 
@@ -27,6 +29,4 @@ class VectorStoreConfig(BaseModel):
     index_type: IndexType
     hnsw_m: int = 32
     top_k: int = 5
-    persist_directory: str = (
-        "data/vector_store"
-    )
+    storage_directory: Path = Path("data/vector_store")
