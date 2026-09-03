@@ -86,14 +86,27 @@ class FAISSStore(BaseVectorStore):
             parents=True,
             exist_ok=True,
         )
+        """
+            Problem:
+                Faiss.add() ----> Application Crashes  ----->  persist() never happen
+            Solution:    
+                safe to retry and prevent duplicate/partially persisted documents.
+                write temp index and mapping later replace with production file.
+        """
+        
+        index_path = directory / "faiss.index"
+        mapping_path = directory / "index_to_chunk_id.json"
+
+        temp_index = directory / "faiss.index.tmp"
+        temp_mapping = directory / "index_to_chunk_id.json.tmp"
 
         faiss.write_index(
             self._index,
-            str(directory / "faiss.index"),
+            str(temp_index),
         )
 
         with open(
-            directory / "index_to_chunk_id.json",
+            temp_mapping,
             "w",
             encoding="utf-8",
         ) as file:
@@ -102,6 +115,9 @@ class FAISSStore(BaseVectorStore):
                 file,
                 indent=4, 
             )
+        
+        temp_index.replace(index_path)
+        temp_mapping.replace(mapping_path)
         
     
     def load(self, directory: Path) -> None:
