@@ -48,3 +48,7 @@ class VectorStoreManager:
         self._provider.persist(
             self._config.storage_directory
         )
+    
+    @property
+    def name(self) -> str:
+        return self._provider.name()
