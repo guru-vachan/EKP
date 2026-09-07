@@ -11,6 +11,7 @@ from app.ingestion.extractors.text_extractor import TextExtractor
 from app.ingestion.interfaces.base_loader import BaseLoader
 from app.schemas.document import Document
 from app.ingestion.loader_registry import LoaderRegistry
+from app.core.exceptions import (DocumentLoadingError, UnsupportedFileTypeError)
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class PDFLoader(BaseLoader):
             )
         
         if self.file_path.suffix.lower() not in self.supports():
-            raise ValueError(
+            raise UnsupportedFileTypeError(
                 f"Unsupported file type: {self.file_path.suffix} "
             )
     
@@ -99,7 +100,7 @@ class PDFLoader(BaseLoader):
                 "failed tp load PDF: %s",
                 self.file_path.name
             )
-            raise RuntimeError(
+            raise DocumentLoadingError(
                 f"Unable to load PDF: {self.file_path} "
              ) from ex
        

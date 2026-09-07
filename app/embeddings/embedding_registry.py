@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from app.embeddings.interfaces.base_embedding import BaseEmbedding
+from app.core.exceptions import UnsupportedEmbeddingProvider
 
 class EmbeddingRegistry:
     """
@@ -35,7 +36,7 @@ class EmbeddingRegistry:
                 sorted(cls._registry.keys())
             )
 
-            raise ValueError(
+            raise UnsupportedEmbeddingProvider(
                 f"Unknown embedding provider: '{provider_name}'. "
                 f"Supported providers: {supported}"
             )

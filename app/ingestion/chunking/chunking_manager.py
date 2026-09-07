@@ -13,7 +13,7 @@ class ChunkingManager:
 
     def chunk(self, document: Document) -> list[Chunk]:
 
-        chunker_cls = ChunkerRegistry.get(self._config.strategy)
+        chunker_cls = ChunkerRegistry.get(self._config.strategy.value)
 
         chunker = chunker_cls(self._config)
 

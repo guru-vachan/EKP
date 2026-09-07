@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from app.vectorstore.interface.base_vectorstore import BaseVectorStore
+from app.core.exceptions import UnsupportedVectorStoreProvider
 
 class VectorStoreRegistry:
 
@@ -28,7 +29,7 @@ class VectorStoreRegistry:
         provider = cls._registry.get(provider_name.lower())
 
         if provider is None:
-            raise ValueError(
+            raise UnsupportedVectorStoreProvider(
                 f"Unknown embedding provider: '{provider_name}'. "
             )
         

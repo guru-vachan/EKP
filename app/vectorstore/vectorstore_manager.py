@@ -14,7 +14,7 @@ class VectorStoreManager:
 
         self._config = config
 
-        provider_cls = VectorStoreRegistry.get(config.provider)
+        provider_cls = VectorStoreRegistry.get(config.provider.value)
 
         self._provider = provider_cls(config)
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from app.ingestion.chunking.interfaces.base_chunker import BaseChunker
+from app.core.exceptions import UnsupportedChunkingStrategy
 
 class ChunkerRegistry:
     """
@@ -32,7 +33,7 @@ class ChunkerRegistry:
         if chunker is None:
             supported = ", ".join(sorted(cls._registry.keys()))
 
-            raise ValueError(
+            raise UnsupportedChunkingStrategy(
                 f"Unknown chunking strategy '{strategy} ."
                 f"supported strategies: {supported}."
             )
