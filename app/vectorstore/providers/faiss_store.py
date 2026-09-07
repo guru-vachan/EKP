@@ -16,13 +16,17 @@ from app.vectorstore.index_factory import IndexFactory
 @VectorStoreRegistry.register
 class FAISSStore(BaseVectorStore):
 
+    _index: faiss.Index | None = None
+
     def __init__(self, config: VectorStoreConfig) -> None:
 
         self._config = config
 
-        self._index = IndexFactory.create(
-            config
-        )
+        if self.__class__._index is None:
+            self.__class__._index = IndexFactory.create(config)
+
+        self._index = self.__class__._index
+        
         self._mapping: dict[int, str] = {}
 
     

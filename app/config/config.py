@@ -1,32 +1,79 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from pathlib import Path
 
-from app.enum.index_type import IndexType
+from app.core.enums import (
+    ChunkingStrategy,
+    EmbeddingProvider,
+    VectorStoreProvider,
+    IndexType
+)
 
 class ChunkingConfig(BaseModel):
-    chunk_size: int = 1000
-    chunk_overlap: int = 200
-    strategy: str
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid"
+    )
+    chunk_size: int = Field(
+        default=1000,
+        gt=0
+    )
+    chunk_overlap: int = Field(
+        default=200,
+        ge=0
+    )
+    strategy: ChunkingStrategy = ChunkingStrategy.RECURRSIVE
+
+    @model_validator(mode="after")
+    def validate_chunking(self) -> "ChunkingConfig" :
+
+        if self.chunk_overlap >= self.chunk_size:
+            raise ValueError(
+                "chunk overlap must be smaller than chunk size."
+            )
+        
+        return self
 
 
 class EmbeddingConfig(BaseModel):
-    device: str
-    model_name: str
-    normalize_embeddings: bool
-    batch_size: int
-    provider: str | None = "bge"
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid"
+    )
+    device: str = "cpu"
+    model_name: str = (
+        "BAAI/bge-small-en-v1.5"
+    )
+    normalize_embeddings: bool = True
+    batch_size: int = Field(
+        default=32,
+        gt=0
+    )
+    provider: EmbeddingProvider | None = EmbeddingProvider.BGE
 
 
 class VectorStoreConfig(BaseModel):
     model_config = ConfigDict(
-        frozen=True
+        frozen=True,
+        extra="forbid"
     )
-    provider: str
+    provider: VectorStoreProvider = (
+        VectorStoreProvider.FAISS
+    )
     dimension: int = Field(
         gt=0
     )
-    index_type: IndexType
-    hnsw_m: int = 32
-    top_k: int = 5
-    storage_directory: Path = Path("data/vector_store")
+    index_type: IndexType = (
+        IndexType.FLAT_IP
+    )
+    hnsw_m: int = Field(
+        default=32,
+        gt=0
+    )
+    top_k: int = Field(
+        default=5,
+        gt=0
+    )
+    storage_directory: Path = Path(
+        "data/vector_store"
+    )

@@ -14,7 +14,7 @@ class EmbeddingManager:
 
         self._config = config
         
-        provider_cls = EmbeddingRegistry.get(config.provider)
+        provider_cls = EmbeddingRegistry.get(config.provider.value)
         self._provider = provider_cls(config)
         
     
