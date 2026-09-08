@@ -11,7 +11,9 @@ from app.core.enums import (
 
 class ChunkingConfig(BaseModel):
     model_config = ConfigDict(
-        frozen=True,
+        # immutable after creation
+        frozen=True, 
+        # Don't allow fields that aren't defined in the schema.
         extra="forbid"
     )
     chunk_size: int = Field(
@@ -77,3 +79,21 @@ class VectorStoreConfig(BaseModel):
     storage_directory: Path = Path(
         "data/vector_store"
     )
+
+
+class QueryConfig(BaseModel):
+    """
+        query processing configuration.
+    """
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    max_query_length: int = Field(
+        default=1000,
+        gt=0
+    )
+    min_query_length: int = Field(
+        default=1,
+        gt=0
+    )
+    preserve_case: bool = True

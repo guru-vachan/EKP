@@ -72,3 +72,10 @@ class VectorStoreInitializationError(VectorStoreError):
 
 class VectorSearchError(VectorStoreError):
     """ """
+
+# ============================
+# Query
+# ============================
+
+class QueryValidationError(EKIPException):
+    """ """
