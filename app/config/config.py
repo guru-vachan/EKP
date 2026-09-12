@@ -97,3 +97,19 @@ class QueryConfig(BaseModel):
         gt=0
     )
     preserve_case: bool = True
+
+
+class QueryRewriteConfig(BaseModel):
+
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    provider: str
+
+    model_name: str
+
+    temperature: float
+
+    max_tokens: int
+
+    system_prompt: str
