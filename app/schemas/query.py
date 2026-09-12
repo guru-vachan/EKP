@@ -9,7 +9,7 @@ class Query(BaseModel):
         extra="forbid"
     )
 
-    query_id : str,
+    query_id : str
 
     query: str = Field(
         min_length=1,
@@ -20,3 +20,5 @@ class Query(BaseModel):
         min_length=1,
         description="original user input"
     )
+
+    rewritten: bool = False
