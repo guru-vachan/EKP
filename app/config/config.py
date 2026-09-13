@@ -6,7 +6,8 @@ from app.core.enums import (
     ChunkingStrategy,
     EmbeddingProvider,
     VectorStoreProvider,
-    IndexType
+    IndexType,
+    FilterOperator
 )
 
 class ChunkingConfig(BaseModel):
@@ -113,3 +114,9 @@ class QueryRewriteConfig(BaseModel):
     max_tokens: int
 
     system_prompt: str
+
+
+class MetadataFilterConfig(BaseModel):
+    field: str
+    operator: FilterOperator
+    value: str | int | float | bool
