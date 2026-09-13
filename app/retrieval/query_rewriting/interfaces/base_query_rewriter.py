@@ -10,7 +10,7 @@ class BaseQueryRewriter(ABC):
         abstract base class for all query rewritter.
     """
 
-    def __init(self, config: QueryRewriteConfig) -> None:
+    def __init__(self, config: QueryRewriteConfig) -> None:
 
         self._config = config
 
@@ -27,6 +27,7 @@ class BaseQueryRewriter(ABC):
         raise NotImplementedError
     
 
+    @abstractmethod
     def rewrite(self, query: Query) -> Query:
         """
             Args: processed query.
