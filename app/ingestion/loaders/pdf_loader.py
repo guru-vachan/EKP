@@ -39,8 +39,8 @@ class PDFLoader(BaseLoader):
     """
 
     @classmethod
-    def supports(cls) -> tuple[str, ...]:
-        return (".pdf",)
+    def name(cls) -> str:
+        return ".pdf"
 
 
     def validate(self) -> None:
