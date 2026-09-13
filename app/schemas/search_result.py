@@ -22,3 +22,10 @@ class SearchResult(BaseModel):
     )
 
     vector_store: str
+
+    retrieval_method: str = Field(
+        description=(
+            "search strategy that produced theresult."
+            "(vector , lexical, hybrid)"
+        )
+    )

@@ -120,3 +120,8 @@ class MetadataFilterConfig(BaseModel):
     field: str
     operator: FilterOperator
     value: str | int | float | bool
+
+class HybridSearchConfig(BaseModel):
+    # rrf rank-based, not score-based strategy
+    provider: str = "rrf"
+    rrf_k: int = 60
