@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pickle
+from pathlib import Path
 from rank_bm25 import BM25Okapi
 
 from app.config.config import LexicalSearchConfig
@@ -11,7 +13,7 @@ from app.schemas.search_result import SearchResult
 from app.schemas.chunk import Chunk
 from app.schemas.FilterCriteria import FilterCriteria
 
-@LexicalSearchConfig.register
+@LexicalSearchRegistry.register
 class BM25Search(BaseLexicalSearch):
 
     def __init__(self, config: LexicalSearchConfig) -> None:
@@ -27,13 +29,15 @@ class BM25Search(BaseLexicalSearch):
     def build(self, chunks: list[Chunk]) -> None:
         
         self._chunks = chunks
-
+   
         corpus = [
             chunk.content.split()
             for chunk in chunks
         ]
+        print("corpus")
+        print(corpus)
         self._bm25 = BM25Okapi(corpus)
-        
+
 
     def search(self, 
              query: Query,
@@ -84,3 +88,24 @@ class BM25Search(BaseLexicalSearch):
             rank += 1
         
         return results
+    
+
+    def persist(self, directory: Path) -> None:
+        directory.mkdir(parents=True, exist_ok=True)
+
+        with open(directory / "bm25.pkl", "wb") as file:
+            pickle.dump(
+                {
+                    "bm25": self._bm25,
+                    "chunks": self._chunks,
+                },
+                file,
+            )
+
+
+    def load(self, directory: Path) -> None:
+        with open(directory / "bm25.pkl", "rb") as file:
+            data = pickle.load(file)
+
+        self._bm25 = data["bm25"]
+        self._chunks = data["chunks"]

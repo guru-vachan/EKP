@@ -23,6 +23,8 @@ from app.ingestion.chunking.chunking_manager import ChunkingManager
 from app.schemas.ingestion_result import IngestionResult
 from app.ingestion.state.ingestion_state import IngestionState
 from app.ingestion.state.ingestion_status import IngestionStatus
+from app.chunkstore.chunk_store_manager import ChunkStoreManager
+from app.retrieval.lexical_search.lexical_search_manager import LexicalSearchManager
 from app.ingestion.metadata.metadata_helper import ( calculate_checksum, build_ingestion_key)
 
 logger = logging.getLogger(__name__)
@@ -50,6 +52,8 @@ class IngestionPipeline:
                  chunking_config: ChunkingConfig,
                  embedding_config: EmbeddingConfig,
                  vector_store_config: VectorStoreConfig,
+                 chunkstore_manager: ChunkStoreManager,
+                 lexical_search_manager: LexicalSearchManager,
                  ) -> None:
         
         self._ingestion = ingestion_manager
@@ -60,6 +64,8 @@ class IngestionPipeline:
         self._chunking_config = chunking_config
         self._embedding_config = embedding_config
         self.vector_store_config = vector_store_config
+        self._chunkstore = chunkstore_manager
+        self._lexical_search = lexical_search_manager
 
         
     
@@ -103,6 +109,13 @@ class IngestionPipeline:
                     f"No chunks generated for '{path.name}."
                 )
             
+            # 1. Store actual chunks
+            self._chunkstore.add(chunks)
+
+            # Build lexical index
+            self._lexical_search.build(chunks)
+            self._lexical_search.persist()
+
             embeddings = self._embeddings.encode(chunks)
 
             if len(embeddings) != len(chunks):

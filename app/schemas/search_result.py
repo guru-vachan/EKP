@@ -29,6 +29,7 @@ class SearchResult(BaseModel):
         description=(
             "search strategy that produced theresult."
             "(vector , lexical, hybrid)"
-        )
+        ),
+        default="hybrid"
     )
-    chunk: Chunk | None
+    chunk: Chunk | None = None

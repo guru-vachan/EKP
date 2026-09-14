@@ -10,7 +10,6 @@ class HybridSearchManager:
     def __init__(self, config: HybridSearchConfig) -> None:
 
         self._config = config
-
         provider_cls = HybridSearchRegistry.get(
             config.provider
         )

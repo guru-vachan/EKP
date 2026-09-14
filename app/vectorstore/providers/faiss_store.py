@@ -48,15 +48,27 @@ class FAISSStore(BaseVectorStore):
         self._index.add(vectors)
 
         for offset, embedding in enumerate(embeddings):
-            self._mapping[start + offset] = embedding.chunk_id
+            self._mapping[str(start + offset)] = embedding.chunk_id
+        
+        print("self._mapping")
+        print(self._mapping)
+        print("FAISS ntotal:", self._index.ntotal)
+        print("Mapping size:", len(self._mapping))
 
     
     def search(self, query_vector: np.ndarray, top_k: int) -> list[SearchResult]:
 
+        print("RETRIEVAL ntotal:", self._index.ntotal)
+        print("RETRIEVAL mapping:", self._mapping)
+        print("RETRIEVAL mapping size:", len(self._mapping))
+        
         distances, indicies = self._index.search(
             query_vector.reshape(1, -1),
             top_k,
         )
+
+        print(distances)
+        print(indicies)
 
         results: list[SearchResult] = []
 
@@ -122,6 +134,8 @@ class FAISSStore(BaseVectorStore):
         
         temp_index.replace(index_path)
         temp_mapping.replace(mapping_path)
+        print("self._mapping.persist")
+        print(self._mapping)
         
     
     def load(self, directory: Path) -> None:

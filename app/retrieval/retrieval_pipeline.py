@@ -67,16 +67,22 @@ class RetrievalPipeline:
         # --------------------------------------------------
         # 4. Generate Query Embedding
         # --------------------------------------------------
-        query_embedding = self._embedding.encode(
+        query_embedding = self._embedding.encode_query(
             rewritten_query.query
         )
 
         # --------------------------------------------------
         # 5. Vector Search
         # --------------------------------------------------
+        self._vector_store.load()
+
+        print("query_embedding")
+        
         vector_results = self._vector_store.search(
             query_vector=query_embedding,
         )
+
+        print(vector_results)
 
         # --------------------------------------------------
         # 4. Load Chunks
@@ -102,21 +108,29 @@ class RetrievalPipeline:
             )
             for result in vector_results
         ]
+        
+        print("filters")
+        print(filters)
+        print(rewritten_query)
+
 
         # --------------------------------------------------
         # 6. Lexical Search
         # --------------------------------------------------
+        self._lexical_search.load()
+
         lexical_results = self._lexical_search.search(
             query=rewritten_query,
             filters=filters,
         )
 
+        
         # --------------------------------------------------
         # 7. Hybrid Search / Ranking
         # --------------------------------------------------
         results = self._hybrid_search.fuse(
             vector_results=vector_results,
-            lexical_results=lexical_results,
+            lexical_result=lexical_results,
         )
 
         logging.info("Retrieved %d chunks.", len(results))

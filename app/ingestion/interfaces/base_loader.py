@@ -45,7 +45,7 @@ class BaseLoader(ABC):
 
     @classmethod
     @abstractmethod
-    def supports(cls) -> tuple[str, ...]:
+    def name(cls) -> str:
         """
             Return support file extensions eg: pdf, etc...
 

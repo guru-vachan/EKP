@@ -49,6 +49,11 @@ class VectorStoreManager:
             self._config.storage_directory
         )
     
+    def load(self) -> None:
+        self._provider.load(
+            self._config.storage_directory
+        )
+    
     @property
     def name(self) -> str:
         return self._provider.name()

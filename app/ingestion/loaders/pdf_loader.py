@@ -54,11 +54,6 @@ class PDFLoader(BaseLoader):
             raise ValueError(
                 f"Not a valid File: {self.file_path} "
             )
-        
-        if self.file_path.suffix.lower() not in self.supports():
-            raise UnsupportedFileTypeError(
-                f"Unsupported file type: {self.file_path.suffix} "
-            )
     
 
     def load(self) -> Document:
