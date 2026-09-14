@@ -7,7 +7,8 @@ from app.core.enums import (
     EmbeddingProvider,
     VectorStoreProvider,
     IndexType,
-    FilterOperator
+    FilterOperator,
+    ChunkStoreProvider,
 )
 
 class ChunkingConfig(BaseModel):
@@ -125,3 +126,19 @@ class HybridSearchConfig(BaseModel):
     # rrf rank-based, not score-based strategy
     provider: str = "rrf"
     rrf_k: int = 60
+
+class LexicalSearchConfig(BaseModel):
+    # rrf rank-based, not score-based strategy
+    provider: str = "rrf"
+    rrf_k: int = 60
+
+class ChunkStoreConfig(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    provider: ChunkStoreProvider = (
+        ChunkStoreProvider.SQLITE
+    )
+    storage_directory: Path = Field(
+        default="data/chunk_store/chunks.db"
+    )

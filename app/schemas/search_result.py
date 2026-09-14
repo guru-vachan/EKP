@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.chunk import Chunk
+
 class SearchResult(BaseModel):
     """
         Represents a single vector search result.
@@ -29,3 +31,4 @@ class SearchResult(BaseModel):
             "(vector , lexical, hybrid)"
         )
     )
+    chunk: Chunk | None

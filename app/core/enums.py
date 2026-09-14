@@ -33,3 +33,7 @@ class FilterOperator(str, Enum):
     EQ = "eq"
     GTE = "gte"
     LTE = "lte"
+
+class ChunkStoreProvider(str, Enum):
+
+    SQLITE = "sqlite"
