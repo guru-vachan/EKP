@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import numpy as np
+from numpy.typing import NDArray
+
 from abc import ABC, abstractmethod
 
 from app.schemas.embedding import Embedding
@@ -27,4 +30,8 @@ class BaseEmbedding(ABC):
                 FlagEmbedding.encode()
 
         """
+        raise NotImplementedError
+    
+    @abstractmethod
+    def encode_query(self, query: str) -> NDArray[np.float32]:
         raise NotImplementedError

@@ -4,7 +4,7 @@ from enum import Enum
 
 class ChunkingStrategy(str, Enum):
 
-    RECURRSIVE = "recurrsive"
+    RECURSIVE = "recursive"
     SEMANTIC = "semantic"
 
 

@@ -28,10 +28,13 @@ class IngestionManager:
         file_path = Path(file_path)
         extension = file_path.suffix.lower()
 
+        print("LoaderRegistry")
+        print(LoaderRegistry.registered_providers())
+
         try:
             loader_cls = LoaderRegistry.get(extension)
             loader = loader_cls(file_path)
-            
+            print(loader_cls)
             return loader.load()
         except Exception as ex:    
             raise UnsupportedFileTypeError(

@@ -26,7 +26,7 @@ class ChunkingConfig(BaseModel):
         default=200,
         ge=0
     )
-    strategy: ChunkingStrategy = ChunkingStrategy.RECURRSIVE
+    strategy: ChunkingStrategy = ChunkingStrategy.RECURSIVE
 
     @model_validator(mode="after")
     def validate_chunking(self) -> "ChunkingConfig" :
@@ -118,6 +118,7 @@ class QueryRewriteConfig(BaseModel):
 
 
 class MetadataFilterConfig(BaseModel):
+    provider: str = "exact_match"
     field: str
     operator: FilterOperator
     value: str | int | float | bool
@@ -129,8 +130,9 @@ class HybridSearchConfig(BaseModel):
 
 class LexicalSearchConfig(BaseModel):
     # rrf rank-based, not score-based strategy
-    provider: str = "rrf"
-    rrf_k: int = 60
+    provider: str = "bm25"
+    top_k: int = 5
+    persist_directory: Path = Path("data/lexical_store")
 
 class ChunkStoreConfig(BaseModel):
     model_config = ConfigDict(

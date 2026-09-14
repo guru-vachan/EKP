@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.metadata import Metadata
 
@@ -7,9 +7,9 @@ class Chunk(BaseModel):
     document_id: str 
     content: str 
     chunk_index: int
-    metadata: Metadata
-    character_count: int
-
+    metadata: Metadata = Field(default_factory=Metadata)
+    character_count: int | None = None
+    
     """
     why we add character_count ?
     Because:

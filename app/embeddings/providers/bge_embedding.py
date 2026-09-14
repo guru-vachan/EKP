@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from uuid import uuid4
 
+from numpy.typing import NDArray
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
@@ -83,4 +84,14 @@ class BGEEmbedding(BaseEmbedding):
         logger.info("Generated %d embedding using %d", len(embeddings), self._config.model_name)
 
         return embeddings
+    
+
+    def encode_query(self, query: str) -> NDArray[np.float32]:
+
+        return self._model.encode(
+            query,
+            normalize_embeddings=self._config.normalize_embeddings,
+            convert_to_numpy=True,
+            show_progress_bar=False,
+        ).astype(np.float32)
         

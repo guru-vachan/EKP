@@ -4,6 +4,7 @@ import sqlite3
 from pathlib import Path
 
 from app.schemas.chunk import Chunk
+from app.schemas.metadata import Metadata
 from app.chunkstore.intefaces.base_chunk_store import BaseChunkStore
 from app.chunkstore.chunk_store_registry import ChunkStoreRegistry
 
@@ -22,6 +23,7 @@ class SQLiteChunkStore(BaseChunkStore):
         )
         # Initialize the database schema.
         self._initialize()
+        self._connection.row_factory = sqlite3.Row
 
     
     @classmethod
@@ -177,6 +179,8 @@ class SQLiteChunkStore(BaseChunkStore):
             document_id=row["document_id"],
             chunk_index=row["chunk_index"],
             content=row["content"],
+            metadata=Metadata(),
+            character_count=len(row["content"]),
         )
     
 

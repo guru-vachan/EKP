@@ -14,6 +14,6 @@ class IngestionState:
 
         return self._state.get(ingestion_key)
     
-     def mark(self, ingestion_key: str, status: IngestionStatus) -> None:
+    def mark(self, ingestion_key: str, status: IngestionStatus) -> None:
 
         self._state[ingestion_key] = status

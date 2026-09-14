@@ -4,6 +4,16 @@ import hashlib
 from pathlib import Path
 from typing import Optional
 
+from app.core.enums import (
+    ChunkingStrategy,
+    EmbeddingProvider,
+    VectorStoreProvider,
+    IndexType,
+    FilterOperator,
+    ChunkStoreProvider,
+)
+
+
 
 def get_file_size(file_path: Path) -> int:
     """
@@ -42,7 +52,7 @@ def calculate_checksum(
 
 def build_ingestion_key(
         checksum: str, 
-        chunking_strategy: str,
+        chunking_strategy: ChunkingStrategy,
         chunk_size: int,
         chunk_overlap: int,
         embedding_model: str,) -> str:

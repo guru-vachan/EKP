@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from app.config.config import LexicalSearchConfig
 from app.schemas.search_result import SearchResult
 from app.schemas.FilterCriteria import FilterCriteria
 from app.schemas.query import Query
+from app.schemas.chunk import Chunk
 
 class BaseLexicalSearch(ABC):
 
@@ -25,7 +27,7 @@ class BaseLexicalSearch(ABC):
         """
         raise NotImplementedError
     
-
+    @abstractmethod
     def search(self, 
              query: Query,
              filters: FilterCriteria,
@@ -39,4 +41,16 @@ class BaseLexicalSearch(ABC):
             Return:
                 ranked search results
         """
+        return NotImplementedError
+    
+    @abstractmethod
+    def build(self, chunks: list[Chunk]) -> None:
+        return NotImplementedError
+    
+    @abstractmethod
+    def persist(self) -> None:
+        return NotImplementedError
+
+    @abstractmethod
+    def load(self) -> None:
         return NotImplementedError
