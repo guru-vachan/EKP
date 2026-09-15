@@ -144,3 +144,16 @@ class ChunkStoreConfig(BaseModel):
     storage_directory: Path = Field(
         default="data/chunk_store/chunks.db"
     )
+
+class ContextConfig(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    max_tokens: int = Field(
+        default=4000,
+        gt=0
+    )
+    max_chunks: int = Field(
+        default=10,
+        gt=0
+    )
