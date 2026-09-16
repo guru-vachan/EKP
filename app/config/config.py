@@ -9,7 +9,9 @@ from app.core.enums import (
     IndexType,
     FilterOperator,
     ChunkStoreProvider,
+    LLMProvider,
 )
+import os
 
 class ChunkingConfig(BaseModel):
     model_config = ConfigDict(
@@ -157,3 +159,31 @@ class ContextConfig(BaseModel):
         default=10,
         gt=0
     )
+
+
+class GeminiConfig(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+
+    model_name: str
+
+    api_key: str = os.getenv("GEMINI_API_KEY")
+
+    temperature: float = Field(
+        default=1024,
+        gt=0
+    )
+    max_output_tokens: int = Field(
+        default=4000,
+        gt=0
+    )
+    timeout_seconds: float = Field(
+        default=30.0,
+        gt=0,
+    )
+
+
+class LLMConfig(BaseModel):
+    provider: LLMProvider.GEMINI
+    gemini: GeminiConfig
