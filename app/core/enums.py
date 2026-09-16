@@ -37,3 +37,7 @@ class FilterOperator(str, Enum):
 class ChunkStoreProvider(str, Enum):
 
     SQLITE = "sqlite"
+
+class LLMProvider(str, Enum):
+
+    GEMINI = "gemini"
