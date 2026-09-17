@@ -28,6 +28,6 @@ class LLMResponse(BaseModel):
 
     provider: str
 
-    usage: str
+    usage: LLMUsage
 
     finish_reason: str | None = None
