@@ -11,6 +11,8 @@ import app.retrieval.lexical_search.providers
 import app.retrieval.hybrid_search.providers
 import app.retrieval.metadata_filtering.providers
 import app.retrieval.query_rewriting.providers
+import app.guardrail.providers
+import app.llm.providers
 
 from app.core.enums import (
     ChunkingStrategy,
@@ -19,6 +21,7 @@ from app.core.enums import (
     IndexType,
     FilterOperator,
     ChunkStoreProvider,
+    LLMProvider,
 )
 
 from tests.builders.test_environment import TestEnvironment
@@ -32,7 +35,10 @@ from app.config.config import (
     MetadataFilterConfig,
     ChunkStoreConfig,
     LexicalSearchConfig,
-    HybridSearchConfig
+    HybridSearchConfig,
+    ContextConfig,
+    LLMConfig,
+    GeminiConfig
 )
 
 from app.embeddings.embedding_manager import EmbeddingManager
@@ -47,9 +53,15 @@ from app.retrieval.query_rewriting.query_rewriting_manager import QueryRewriterM
 from app.vectorstore.vectorstore_manager import VectorStoreManager
 from app.chunkstore.chunk_store_manager import ChunkStoreManager
 from app.ingestion.state.ingestion_state import IngestionState
+from app.retrieval.context_builder.context_builder import ContextBuilder
+from app.citations.citation_builder import CitationBuilder
+from app.guardrail.guardrail_manager import GuardrailManager
+from app.llm.llm_manager import LLMManager
+from app.llm.prompt_builder import PromptBuilder
 
 from app.ingestion.ingestion_pipeline import IngestionPipeline
 from app.retrieval.retrieval_pipeline import RetrievalPipeline
+from app.generation.generation_pipeline import GenerationPipeline
 
 from app.retrieval.lexical_search.lexical_search_registry import LexicalSearchRegistry
 
@@ -107,7 +119,15 @@ def build_test_environment(storage_dir: Path) -> TestEnvironment:
         ), 
         hybrid_search_config=HybridSearchConfig(
             provider="rrf",
-        ), 
+        ),
+        context_config=ContextConfig(),
+        llm_config=LLMConfig(
+            provider=LLMProvider.GEMINI,
+            gemini=GeminiConfig(
+                model_name="gemini-2.5-flash"
+            )
+        ),  
+
         )
 
 
@@ -142,6 +162,32 @@ def build_retrieval_pipeline(storage_dir: Path) -> RetrievalPipeline:
         chunk_store= ChunkStoreManager(env.chunk_store_config),
         lexical_search= LexicalSearchManager(env.lexical_search_config),
         hybrid_search= HybridSearchManager(env.hybrid_search_config)
+    )
+
+def build_generation_pipeline(storage_dir: Path) -> GenerationPipeline:
+
+    env = build_test_environment(storage_dir)
+
+    retrieval_pipeline = build_retrieval_pipeline(storage_dir)
+
+    return GenerationPipeline(
+        query_processor = QueryProcessor(env.query_config),
+        retrieval_pipeline = retrieval_pipeline,
+        context_builder= ContextBuilder(
+            env.context_config
+        ),
+        prompt_builder=PromptBuilder(),
+        llm_manager=LLMManager(
+            env.llm_config
+        ),
+        guardrail_manager=GuardrailManager(
+            guardrail_names=(
+                "response",
+                "grounding"
+            )
+        ),
+        citation_builder=CitationBuilder()
+
     )
     
 

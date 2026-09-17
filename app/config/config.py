@@ -11,7 +11,10 @@ from app.core.enums import (
     ChunkStoreProvider,
     LLMProvider,
 )
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 class ChunkingConfig(BaseModel):
     model_config = ConfigDict(
@@ -171,8 +174,9 @@ class GeminiConfig(BaseModel):
     api_key: str = os.getenv("GEMINI_API_KEY")
 
     temperature: float = Field(
-        default=1024,
-        gt=0
+        default=0.0,
+        ge=0.0,
+        le=2.0,
     )
     max_output_tokens: int = Field(
         default=4000,
@@ -185,5 +189,5 @@ class GeminiConfig(BaseModel):
 
 
 class LLMConfig(BaseModel):
-    provider: LLMProvider.GEMINI
+    provider: LLMProvider = LLMProvider.GEMINI
     gemini: GeminiConfig

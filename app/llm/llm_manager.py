@@ -19,7 +19,9 @@ class LLMManager:
         provider_cls = LLMRegistry.get(
             config.provider
         )
-        if provider_cls == LLMProvider.GEMINI:
+        print("provider_cls ================ ")
+        print(provider_cls)
+        if config.provider == LLMProvider.GEMINI:
             self._provider: BaseLLM = provider_cls(
                 config.gemini
             )

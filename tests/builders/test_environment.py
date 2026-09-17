@@ -9,7 +9,9 @@ from app.config.config import (
     MetadataFilterConfig,
     ChunkStoreConfig,
     LexicalSearchConfig,
-    HybridSearchConfig
+    HybridSearchConfig,
+    LLMConfig,
+    ContextConfig
 )
 
 class TestEnvironment(BaseModel):
@@ -28,5 +30,9 @@ class TestEnvironment(BaseModel):
 
     lexical_search_config: LexicalSearchConfig
     hybrid_search_config: HybridSearchConfig
+
+    context_config: ContextConfig
+    llm_config: LLMConfig
+
 
     

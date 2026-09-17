@@ -19,6 +19,10 @@ def remove_control_character(query: str) -> str:
     """
         remove non printable control characters.
     """
+    print("+++++++++++++++++++++++++")
+    print(type(query), query)
+    print("+++++++++++++++++++++++++")
+
     return "".join(
         character
         for character in query

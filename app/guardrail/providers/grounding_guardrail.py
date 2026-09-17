@@ -48,7 +48,7 @@ class GroundingGuardrail(BaseGuardrail):
             for item in context.items
         )
         invalid_citations = (
-            cited_chunk_ids - allowed_chunk_ids
+            cited_chunk_ids - set(allowed_chunk_ids)
         )
         if invalid_citations:
             return GuardrailViolation(

@@ -21,7 +21,9 @@ class GeminiLLM(BaseLLM):
 
         self._config = config
 
-        self._client = genai.configure(
+        print("=====================")
+        print(config.api_key)
+        self._client = genai.Client(
             api_key=config.api_key
         )
 
