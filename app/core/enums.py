@@ -41,3 +41,7 @@ class ChunkStoreProvider(str, Enum):
 class LLMProvider(str, Enum):
 
     GEMINI = "gemini"
+
+class AgentIntent(str, Enum):
+    ACTION="action"
+    KNOWLEDGE = "knowledge"
