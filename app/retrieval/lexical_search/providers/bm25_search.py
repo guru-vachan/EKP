@@ -34,8 +34,7 @@ class BM25Search(BaseLexicalSearch):
             chunk.content.split()
             for chunk in chunks
         ]
-        print("corpus")
-        print(corpus)
+        
         self._bm25 = BM25Okapi(corpus)
 
 

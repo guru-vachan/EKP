@@ -59,6 +59,15 @@ from app.guardrail.guardrail_manager import GuardrailManager
 from app.llm.llm_manager import LLMManager
 from app.llm.prompt_builder import PromptBuilder
 
+from app.agents.nodes.action_node import ActionNode
+from app.agents.nodes.knowledge_node import KnowledgeNode
+from app.agents.nodes.planner_node import PlannerNode
+
+from app.agents.tool_router.tool_router import ToolRouter
+from app.agents.workflows.agent_workflows import AgenWorkflow
+from app.agents.tool.interfaces.base_tool import BaseTool
+from app.agents.planner.llm_planner import LLMPlanner
+
 from app.ingestion.ingestion_pipeline import IngestionPipeline
 from app.retrieval.retrieval_pipeline import RetrievalPipeline
 from app.generation.generation_pipeline import GenerationPipeline
@@ -189,6 +198,40 @@ def build_generation_pipeline(storage_dir: Path) -> GenerationPipeline:
         citation_builder=CitationBuilder()
 
     )
+
+def build_agent_workflow(
+        storage_dir: Path,
+        tools: list[BaseTool]
+        ) -> AgenWorkflow:
+
+    env = build_test_environment(storage_dir)
+
+    generation_pipeline = build_generation_pipeline(storage_dir)
+
+    llm_manager=LLMManager(
+            env.llm_config
+        )
+    
+    llm_planner = LLMPlanner(
+        llm_manager = llm_manager
+    )
+
+    tool_router = ToolRouter(
+        tools=tools
+    )
+
+    return AgenWorkflow(
+        planner_node=PlannerNode(
+            planner=llm_planner
+        ),
+        knowledge_node= KnowledgeNode(
+            generation_pipeline=generation_pipeline
+        ),
+        action_node=ActionNode(
+            tool_router=tool_router
+        ),
+    )
+
     
 
 

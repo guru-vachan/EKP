@@ -32,7 +32,7 @@ class AgentState(BaseModel):
         ge=0,
     )
 
-    total_results: dict[str, Any] = Field(
+    tool_results: dict[str, Any] = Field(
         default_factory=dict
     )
 

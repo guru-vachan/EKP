@@ -28,8 +28,6 @@ class IngestionManager:
         file_path = Path(file_path)
         extension = file_path.suffix.lower()
 
-        print("LoaderRegistry")
-        print(LoaderRegistry.registered_providers())
 
         try:
             loader_cls = LoaderRegistry.get(extension)

@@ -35,6 +35,17 @@ from app.retrieval.query_rewriting.query_rewriting_manager import QueryRewriterM
 from app.vectorstore.vectorstore_manager import VectorStoreManager
 from app.ingestion.state.ingestion_state import IngestionState
 
+from app.agents.workflows.agent_workflows import AgenWorkflow
+from app.agents.nodes.action_node import ActionNode
+from app.agents.nodes.knowledge_node import KnowledgeNode
+from app.agents.nodes.planner_node import PlannerNode
+
+from app.agents.tool_router.tool_router import ToolRouter
+from app.agents.tool.email_tool import EmailTool
+from app.agents.workflows.agent_workflows import AgenWorkflow
+from app.agents.tool.interfaces.base_tool import BaseTool
+from app.agents.planner.llm_planner import LLMPlanner
+
 from app.core.enums import (
     VectorStoreProvider,
     EmbeddingProvider,
@@ -54,6 +65,7 @@ class ApplicationContainer:
 
     ingestion_pipeline: IngestionPipeline 
     generation_pipeline: GenerationPipeline
+    agen_workflow:AgenWorkflow
 
 def build_application( settings: Settings, ) -> ApplicationContainer:
 
@@ -115,6 +127,16 @@ def build_application( settings: Settings, ) -> ApplicationContainer:
         gemini=Settings.GeminiConfig(
             model_name="gemini-2.5-flash",
         ),
+    ),
+
+    email_config = Settings.EmailConfig(
+        host="smtp.gmail.com",
+        port=587,
+        sender="your-email@gmail.com",
+        username="your-email@gmail.com",
+        password=os.getenv("EMAIL_PASSWORD"),
+        use_tls=True,
+        timeout_seconds=10.0,
     )
 
     # -------------------------
@@ -219,7 +241,32 @@ def build_application( settings: Settings, ) -> ApplicationContainer:
         citation_builder=CitationBuilder(),
     )
 
+    email_tool = EmailTool(
+        email_config
+    )
+    tool_router = ToolRouter(
+        tools=[
+            email_tool,
+        ]
+    )
+    agent_workflow = AgenWorkflow(
+        planner_node=PlannerNode(
+            planner=LLMPlanner(
+                llm_manager=LLMManager(
+                        llm_config
+                    ),
+            )
+        ),
+        knowledge_node=KnowledgeNode(
+            generation_pipeline=generation_pipeline
+        ),
+        action_node=ActionNode(
+            tool_router=tool_router
+        )
+    )
+
     return ApplicationContainer(
         ingestion_pipeline=ingestion_pipeline,
-        generation_pipeline=generation_pipeline
+        generation_pipeline=generation_pipeline,
+        agen_workflow=agent_workflow
     )

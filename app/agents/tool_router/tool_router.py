@@ -14,7 +14,7 @@ class ToolRouter:
             self,
             tools: list[BaseTool],
     ) -> None:
-        self._tools = dict[str, BaseTool] = {
+        self._tools:dict[str, BaseTool] = {
             tool.name().lower(): tool
             for tool in tools
         }
