@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator, EmailStr
 
 from pathlib import Path
 
@@ -191,3 +191,25 @@ class GeminiConfig(BaseModel):
 class LLMConfig(BaseModel):
     provider: LLMProvider = LLMProvider.GEMINI
     gemini: GeminiConfig
+
+
+class EmailConfig(BaseModel):
+    
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+    )
+
+    host: str
+    port: int = Field (gt=0, le=65535)
+
+    sender: EmailStr
+
+    username: str | None = None
+    password: str | None = None
+
+    use_tls: bool =True
+    timeout_seconds: float = Field(
+        default=10.0,
+        gt=0,
+    )
