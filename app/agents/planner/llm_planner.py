@@ -48,7 +48,7 @@ Rules:
 - Knowledge-only requests must use enterprise_knowledge.
 """.strip()
     
-    def __init_(
+    def __init__(
             self,
             llm_manager: LLMManager,
     ) -> None:

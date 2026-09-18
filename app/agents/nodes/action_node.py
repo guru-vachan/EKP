@@ -39,7 +39,7 @@ class ActionNode:
 
                 result = self._tool_router.execute( 
                     step=step,
-                    action=step.action,
+                    tool_input=tool_input,
                 )
 
                 tool_results[str(step.step_id)] = (
