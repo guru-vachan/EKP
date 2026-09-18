@@ -27,7 +27,12 @@ Return ONLY valid JSON matching this structure:
         "step_id": 1,
         "action": "action_name",
         "description": "what this step should accomplish", 
-        "tool_name": "tool_name or null"
+        "tool_name": "tool_name or null",
+        "arguments": {
+            "recipient": "user@example.com",
+            "subject": "subject",
+            "body": "Message"
+        }
     }
   ]
 }

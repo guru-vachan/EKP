@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, Field
+from typing import Any
 
 from app.core.enums import AgentIntent
 
@@ -23,6 +24,10 @@ class Planstep (BaseModel):
     )
 
     tool_name: str | None = None
+
+    arguments: dict[str, Any] = Field(
+        default_factory= dict
+    )
 
 class ExecutionPlan(BaseModel):
 
