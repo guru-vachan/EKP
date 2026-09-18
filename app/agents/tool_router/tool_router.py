@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.agents.tool.tool_registry import ToolRegistry
+from app.agents.tool.interfaces.base_tool import BaseTool
 
 from app.schemas.tool import ToolInput, ToolResult
 from app.schemas.execution_plan import Planstep
@@ -9,6 +9,16 @@ class ToolRouter:
     """
         Resolves and executes the tool requested by a plan step
     """
+
+    def __init__(
+            self,
+            tools: list[BaseTool],
+    ) -> None:
+        self._tools = dict[str, BaseTool] = {
+            tool.name().lower(): tool
+            for tool in tools
+        }
+
 
     def execute(
             self,
@@ -26,13 +36,22 @@ class ToolRouter:
                 ),
             )
         
-        try:
-            tool_cls = ToolRegistry.get(
-                step.tool_name
+        tool = self._tools.get(
+                step.tool_name.lower()
             )
-
-            tool = tool_cls
-
+        
+        if tool is None:
+            return ToolResult(
+                tool_name=step.tool_name,
+                success=False,
+                error=(
+                    f"plan step '{step.tool_name}'"
+                    "does not specify a tool."
+                ),
+            )
+        
+        try:
+            
             return tool.execute(
                 tool_input
             )
