@@ -37,7 +37,8 @@ class FakeEmailTool (BaseTool):
     
 
 @pytest.mark.integration
-def test_agent_knowledge_workflow ( tmp_path: Path,) -> None:
+@pytest.mark.asyncio
+async def test_agent_knowledge_workflow ( tmp_path: Path,) -> None:
 
     pdf_path = Path("data/raw/sample.pdf")
 
@@ -50,7 +51,7 @@ def test_agent_knowledge_workflow ( tmp_path: Path,) -> None:
         tools=[FakeEmailTool()],
     )
 
-    result = workflow.invoke(
+    result = await workflow.invoke(
         "what are Working Hours and Attendance?"
     )
 
@@ -61,7 +62,8 @@ def test_agent_knowledge_workflow ( tmp_path: Path,) -> None:
 
 
 @pytest.mark.integration
-def test_agent_email_workflow ( tmp_path: Path,) -> None:
+@pytest.mark.asyncio
+async def test_agent_email_workflow ( tmp_path: Path,) -> None:
 
 
     workflow = build_agent_workflow(
@@ -69,7 +71,7 @@ def test_agent_email_workflow ( tmp_path: Path,) -> None:
         tools=[FakeEmailTool()],
     )
 
-    result = workflow.invoke(
+    result = await workflow.invoke(
         "Send an email to test@example.com "
         "with subject Project Update' saying"
         "'The project is progressing well'"

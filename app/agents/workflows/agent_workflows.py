@@ -87,7 +87,7 @@ class AgenWorkflow:
         
         return state.plan.intent
     
-    def invoke(
+    async def invoke(
             self,
             user_request: str,
     ) -> AgentState:
@@ -99,7 +99,7 @@ class AgenWorkflow:
             user_request=user_request,
         )
 
-        result = self._graph.invoke(
+        result = self._graph.ainvoke(
             initial_state
         )
 

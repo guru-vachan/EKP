@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from app.agents.tool_router.tool_router import ToolRouter
+from app.agents.tool_router.mcp_tool_router import MCPToolRouter
 from app.schemas.agent_state import AgentState
 from app.schemas.tool import ToolInput
 
@@ -8,13 +9,13 @@ class ActionNode:
 
     def __init__(
             self,
-            tool_router: ToolRouter
+            tool_router: MCPToolRouter
     ) -> None:
         
-        self._tool_router = tool_router
+        self._tool_router = MCPToolRouter
 
     
-    def __call__(
+    async def __call__(
             self, 
             state: AgentState,
             ) -> dict[str, object]:
@@ -33,13 +34,17 @@ class ActionNode:
                 if not step.tool_name:
                     continue
 
-                tool_input = ToolInput(
-                    arguments=step.arguments
-                )
+            #    tool_input = ToolInput(
+            #        arguments=step.arguments
+            #    )
 
-                result = self._tool_router.execute( 
-                    step=step,
-                    tool_input=tool_input,
+            #    result = self._tool_router.execute( 
+            #        step=step,
+            #        tool_input=tool_input,
+            #    )
+
+                result = await self._tool_router.execute(
+                    step=step
                 )
 
                 tool_results[str(step.step_id)] = (

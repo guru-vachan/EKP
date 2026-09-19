@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from mcp import StdioServerParameters
+
 # Provider imports execute registry decorators.
 import app.chunkstore.providers.sqlite_chunk_store # noqa: F401 
 import app.embeddings.providers.bge_embedding # noqa: F401 
@@ -39,12 +41,15 @@ from app.agents.workflows.agent_workflows import AgenWorkflow
 from app.agents.nodes.action_node import ActionNode
 from app.agents.nodes.knowledge_node import KnowledgeNode
 from app.agents.nodes.planner_node import PlannerNode
+from app.agents.planner.llm_planner import LLMPlanner
 
 from app.agents.tool_router.tool_router import ToolRouter
+from app.agents.tool_router.mcp_tool_router import MCPToolRouter
 from app.agents.tool.email_tool import EmailTool
 from app.agents.workflows.agent_workflows import AgenWorkflow
 from app.agents.tool.interfaces.base_tool import BaseTool
-from app.agents.planner.llm_planner import LLMPlanner
+
+from app.mcp.client.mcp_client import MCPClient
 
 from app.core.enums import (
     VectorStoreProvider,
@@ -66,6 +71,7 @@ class ApplicationContainer:
     ingestion_pipeline: IngestionPipeline 
     generation_pipeline: GenerationPipeline
     agen_workflow:AgenWorkflow
+    mcp_client: MCPClient
 
 def build_application( settings: Settings, ) -> ApplicationContainer:
 
@@ -127,14 +133,14 @@ def build_application( settings: Settings, ) -> ApplicationContainer:
         gemini=Settings.GeminiConfig(
             model_name="gemini-2.5-flash",
         ),
-    ),
+    )
 
     email_config = Settings.EmailConfig(
         host="smtp.gmail.com",
         port=587,
         sender="your-email@gmail.com",
         username="your-email@gmail.com",
-        password=os.getenv("EMAIL_PASSWORD"),
+        password="1234",
         use_tls=True,
         timeout_seconds=10.0,
     )
@@ -241,32 +247,49 @@ def build_application( settings: Settings, ) -> ApplicationContainer:
         citation_builder=CitationBuilder(),
     )
 
+    server_parameters = StdioServerParameters(
+        command="python",
+        args=[
+            "-m",
+            "app.mcp.server",
+        ],
+    )
+
+    mcp_client = MCPClient(
+        server_parameters=server_parameters
+    )
+
+    mcp_tool_router = MCPToolRouter(
+        client=mcp_client,
+    )
+
+    planner=LLMPlanner( 
+        llm_manager=LLMManager(llm_config) 
+        )
+
     email_tool = EmailTool(
         email_config
     )
-    tool_router = ToolRouter(
-        tools=[
-            email_tool,
-        ]
-    )
+    #    tool_router = ToolRouter(
+    #        tools=[
+    #            email_tool,
+    #        ]
+    #    )
     agent_workflow = AgenWorkflow(
         planner_node=PlannerNode(
-            planner=LLMPlanner(
-                llm_manager=LLMManager(
-                        llm_config
-                    ),
-            )
+            planner=planner
         ),
         knowledge_node=KnowledgeNode(
             generation_pipeline=generation_pipeline
         ),
         action_node=ActionNode(
-            tool_router=tool_router
+            tool_router=mcp_tool_router
         )
     )
 
     return ApplicationContainer(
         ingestion_pipeline=ingestion_pipeline,
         generation_pipeline=generation_pipeline,
-        agen_workflow=agent_workflow
+        agen_workflow=agent_workflow,
+        mcp_client=mcp_client,
     )
