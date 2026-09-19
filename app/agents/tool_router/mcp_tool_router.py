@@ -44,9 +44,10 @@ class MCPToolRouter:
         """
             Invoke the tool selected by the planner.
         """
+        
         if not step.tool_name:
             return ToolResult(
-                tool_name="unknown"
+                tool_name="unknown",
                 success=False,
                 error="Plan step does not specify a tool.",
             )
@@ -69,8 +70,8 @@ class MCPToolRouter:
                 tool_name=step.tool_name,
                 arguments=step.arguments,
             )
-
-            if result.isError:
+             
+            if result.is_error:
                 return ToolResult(
                     tool_name=step.tool_name,
                     success=False,
