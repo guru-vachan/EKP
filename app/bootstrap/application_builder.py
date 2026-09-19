@@ -127,14 +127,14 @@ def build_application( settings: Settings, ) -> ApplicationContainer:
         gemini=Settings.GeminiConfig(
             model_name="gemini-2.5-flash",
         ),
-    ),
+    )
 
     email_config = Settings.EmailConfig(
         host="smtp.gmail.com",
         port=587,
         sender="your-email@gmail.com",
         username="your-email@gmail.com",
-        password=os.getenv("EMAIL_PASSWORD"),
+        password="1234",
         use_tls=True,
         timeout_seconds=10.0,
     )
