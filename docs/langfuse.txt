@@ -1,0 +1,47 @@
+LangGraph:
+    What should the Agent do next? How does my agent RUN?
+
+MCP tool connectivity/protocol:
+    How does the Agent access external capabilities?
+
+Langfuse AI observability + evaluation: (opensiurce platform)
+    What exactly did the Agent/LLM do, and how well did it perform?
+    Langfuse traces can include LLM calls as well as retrieval, embeddings, API calls and other application steps, 
+    and can track sessions, users, latency, cost and other metadata So instead of searching raw text logs, 
+    you can inspect the complete AI request.
+
+Application Logging:
+    What happened inside my application/infrastructure?
+    when its useful: 
+        1. Did API crash? 
+        2. Did DB connection fail? 
+        3. Did Jira return 500? 
+        4. Did MCP connection timeout? 
+        5. Which pod handled request? 
+        6. Which request_id failed? 
+        7. What exception occurred?
+    when its not useful: For an AI Agent, you often need answers to different questions,
+        1. Which prompt was sent? 
+        2. Which model was used? 
+        3. What exactly did LLM return? 
+        4. Which tool did the agent select? 
+        5. How much did the request cost? 
+
+example:
+user: "Why is ABC-123 blocked?"
+Agent answers: : "It is blocked because database migration failed." 
+
+    But that's incorrect.
+Tracing:
+    Application Logs:
+        1. INFO request received 
+        2. INFO jira call successful 
+        3. INFO model call successful 
+        4. INFO request completed 200. 
+    Overall Everything looks healthy. but user prospective its wrong answer.
+
+    LangFuse traces:
+        1. Jira: correct output
+        2. MCP: correct output 
+        3. Retrieval: correct output
+        4. LLM: Incorrect output
