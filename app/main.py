@@ -19,9 +19,16 @@ async def lifespan ( app: FastAPI,)  -> AsyncIterator [None]:
     """
         Manage EKIP application lifecycle.
     """
-    app.state.container = build_application( settings )
+    container = build_application( settings )
+    
+    await container.mcp_client.connect()
 
-    yield
+    app.state.container = container
+
+    try:
+        yield
+    finally:
+        await container.mcp_client.close()
 
     # Provider cleanup will be added here when resources
     # requiring explicit shutdown are introduced.
